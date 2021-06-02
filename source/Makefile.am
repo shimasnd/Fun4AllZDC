@@ -12,22 +12,22 @@ AM_LDFLAGS = \
   -L$(OFFLINE_MAIN)/lib64
 
 pkginclude_HEADERS = \
-  ZDCSubsystem.h\
-  ZDCNtuple.h\
-  ZDCHitTree.h
+  EICG4ZDCSubsystem.h\
+  EICG4ZDCNtuple.h\
+  EICG4ZDCHitTree.h
 
 lib_LTLIBRARIES = \
-  libZDC.la
+  libEICG4ZDC.la
 
-libZDC_la_SOURCES = \
-  ZDCSubsystem.cc\
-  ZDCDetector.cc\
-  ZDCSteppingAction.cc\
-  ZDCStructure.cc\
-  ZDCNtuple.cc\
-  ZDCHitTree.cc
+libEICG4ZDC_la_SOURCES = \
+  EICG4ZDCSubsystem.cc\
+  EICG4ZDCDetector.cc\
+  EICG4ZDCSteppingAction.cc\
+  EICG4ZDCStructure.cc\
+  EICG4ZDCNtuple.cc\
+  EICG4ZDCHitTree.cc
 
-libZDC_la_LIBADD = \
+libEICG4ZDC_la_LIBADD = \
   -lphool \
   -lSubsysReco\
   -lg4detectors\
@@ -39,7 +39,7 @@ noinst_PROGRAMS = \
   testexternals
 
 testexternals_SOURCES = testexternals.cc
-testexternals_LDADD   = libZDC.la
+testexternals_LDADD   = libEICG4ZDC.la
 
 testexternals.cc:
 	echo "//*** this is a generated file. Do not commit, do not edit" > $@
