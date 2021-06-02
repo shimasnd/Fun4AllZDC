@@ -1,4 +1,4 @@
-AC_INIT(zdc,[1.00])
+AC_INIT(eicg4zdc,[1.00])
 AC_CONFIG_SRCDIR([configure.ac])
 
 AM_INIT_AUTOMAKE
