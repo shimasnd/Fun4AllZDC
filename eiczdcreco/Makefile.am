@@ -14,9 +14,11 @@ AM_CPPFLAGS = \
   -I${G4_MAIN}/include
 
 pkginclude_HEADERS = \
-  RawTowerZDCDigitizer.h 
+  RawTowerZDCDigitizer.h \
+  RawTowerZDCCalibration.h
 libeiczdcreco_la_SOURCES = \
-  RawTowerZDCDigitizer.cc 
+  RawTowerZDCDigitizer.cc \
+  RawTowerZDCCalibration.cc
 
 libeiczdcreco_la_LDFLAGS = \
   -L$(libdir) \
