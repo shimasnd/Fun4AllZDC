@@ -17,7 +17,7 @@ pkginclude_HEADERS = \
   RawTowerZDCDigitizer.h 
 libeiczdcreco_la_SOURCES = \
   RawTowerZDCDigitizer.cc 
-  
+
 libeiczdcreco_la_LDFLAGS = \
   -L$(libdir) \
   -L$(OFFLINE_MAIN)/lib
