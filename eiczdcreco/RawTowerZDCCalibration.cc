@@ -133,7 +133,7 @@ int RawTowerZDCCalibration::process_event(PHCompositeNode */*topNode*/)
     }
     else if (_calib_algorithm == kTower_by_tower_calibration)
     {
-      RawTowerZDCDefs::CalorimeterId caloid = RawTowerZDCDefs::decode_caloid(key);
+      //      RawTowerZDCDefs::CalorimeterId caloid = RawTowerZDCDefs::decode_caloid(key);
       const int eta = raw_tower->get_bineta();
       const int phi = raw_tower->get_binphi();
       const int twr   = raw_tower->get_binl();
