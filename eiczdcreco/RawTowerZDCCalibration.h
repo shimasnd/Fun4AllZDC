@@ -43,7 +43,7 @@ class RawTowerZDCCalibration : public SubsysReco
     //! directly pass the energy of raw tower to calibrated tower. Zero suppression is applied
     kNo_calibration = 0,
 
-    //! simple calibration with pedstal subtraction and a global energy scale (sampling fraction) correction
+    //! simple calibration with pedestal subtraction and a global energy scale (sampling fraction) correction
     kSimple_linear_calibration = 1,
 
     //! input calibration file for tower by tower calibration. Use GetCalibrationParameters() to set the calibration parameters
@@ -93,15 +93,15 @@ class RawTowerZDCCalibration : public SubsysReco
   }
 
   double
-  get_pedstal_ADC() const
+  get_pedestal_ADC() const
   {
-    return _pedstal_ADC;
+    return _pedestal_ADC;
   }
 
   void
-  set_pedstal_ADC(double pedstalAdc)
+  set_pedestal_ADC(double pedestalAdc)
   {
-    _pedstal_ADC = pedstalAdc;
+    _pedestal_ADC = pedestalAdc;
   }
 
   void
@@ -155,8 +155,8 @@ class RawTowerZDCCalibration : public SubsysReco
   std::string _calib_tower_node_prefix;
   std::string _raw_tower_node_prefix;
 
-  //! pedstal in unit of ADC
-  double _pedstal_ADC;
+  //! pedestal in unit of ADC
+  double _pedestal_ADC;
 
   //! pedestal from file
   bool _pedestal_file;

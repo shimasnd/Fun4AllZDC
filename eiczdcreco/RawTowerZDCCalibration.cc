@@ -45,8 +45,8 @@ RawTowerZDCCalibration::RawTowerZDCCalibration(const std::string &name)
   _calib_tower_node_prefix("CALIB")
   , _raw_tower_node_prefix("RAW")
   ,  //
-  //! pedstal in unit of ADC
-  _pedstal_ADC(NAN)
+  //! pedestal in unit of ADC
+  _pedestal_ADC(NAN)
   ,
   //! default to fixed pedestal
   _pedestal_file(false)
@@ -125,7 +125,7 @@ int RawTowerZDCCalibration::process_event(PHCompositeNode */*topNode*/)
     else if (_calib_algorithm == kSimple_linear_calibration)
     {
       const double raw_energy = raw_tower->get_energy();
-      const double calib_energy = (raw_energy - _pedstal_ADC) * _calib_const_GeV_ADC;
+      const double calib_energy = (raw_energy - _pedestal_ADC) * _calib_const_GeV_ADC;
 
       RawTowerZDC *calib_tower = new RawTowerZDCv1(*raw_tower);
       calib_tower->set_energy(calib_energy);
@@ -145,8 +145,8 @@ int RawTowerZDCCalibration::process_event(PHCompositeNode */*topNode*/)
 
       if (_pedestal_file == true)
       {
-	const string pedstal_name("PedCentral_ADC_eta" + to_string(eta) + "_phi" + to_string(phi)+ "_twr" + to_string(twr));
-	_pedstal_ADC = _tower_calib_params.get_double_param(pedstal_name);
+	const string pedestal_name("PedCentral_ADC_eta" + to_string(eta) + "_phi" + to_string(phi)+ "_twr" + to_string(twr));
+	_pedestal_ADC = _tower_calib_params.get_double_param(pedestal_name);
       }
 
       if (_GeV_ADC_file == true)
@@ -156,7 +156,7 @@ int RawTowerZDCCalibration::process_event(PHCompositeNode */*topNode*/)
       }
        
       const double raw_energy = raw_tower->get_energy();
-      const double calib_energy = (raw_energy - _pedstal_ADC) * _calib_const_GeV_ADC * tower_by_tower_calib;
+      const double calib_energy = (raw_energy - _pedestal_ADC) * _calib_const_GeV_ADC * tower_by_tower_calib;
 
 
       RawTowerZDC *calib_tower = new RawTowerZDCv1(*raw_tower);

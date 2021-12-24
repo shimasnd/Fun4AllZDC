@@ -49,8 +49,8 @@ RawTowerZDCDigitizer::RawTowerZDCDigitizer(const std::string &name)
   , m_RawTowerNodePrefix("RAW")
   , m_PhotonElecYieldVisibleGeV(NAN)
   , m_PhotonElecADC(NAN)
-  , m_PedstalCentralADC(NAN)
-  , m_PedstalWidthADC(NAN)
+  , m_PedestalCentralADC(NAN)
+  , m_PedestalWidthADC(NAN)
   , m_pedestalFile(false)
   , m_ZeroSuppressionADC(-1000)  //default to apply no zero suppression
   , m_ZeroSuppressionFile(false)
@@ -115,7 +115,7 @@ int RawTowerZDCDigitizer::process_event(PHCompositeNode */*topNode*/)
     }
     else if (m_DigiAlgorithm == kSimple_photon_digitization)
     {
-      cout << "simple digitization with photon statistics, ADC conversion and pedstal";
+      cout << "simple digitization with photon statistics, ADC conversion and pedestal";
     }
     cout << endl;
   }
@@ -143,9 +143,9 @@ int RawTowerZDCDigitizer::process_event(PHCompositeNode */*topNode*/)
     if (m_pedestalFile == true)
     {
       const string pedCentralName = "PedCentral_ADC_eta" + to_string(eta) + "_phi" + to_string(phi) + "_twr" + to_string(twr);
-      m_PedstalCentralADC = _tower_params.get_double_param(pedCentralName);
+      m_PedestalCentralADC = _tower_params.get_double_param(pedCentralName);
       const string pedWidthName = "PedWidth_ADC_eta" + to_string(eta) + "_phi" + to_string(phi) + "_twr" + to_string(twr);
-      m_PedstalWidthADC = _tower_params.get_double_param(pedWidthName);
+      m_PedestalWidthADC = _tower_params.get_double_param(pedWidthName);
     }
 
     if (m_TowerType >= 0)
@@ -242,8 +242,8 @@ RawTowerZDCDigitizer::simple_photon_digitization(RawTowerZDC *sim_tower)
   const int photon_count = gsl_ran_poisson(m_RandomGenerator, photon_count_mean);
   const int signal_ADC = floor(photon_count / m_PhotonElecADC);
 
-  const double pedstal = m_PedstalCentralADC + ((m_PedstalWidthADC > 0) ? gsl_ran_gaussian(m_RandomGenerator, m_PedstalWidthADC) : 0);
-  const int sum_ADC = signal_ADC + (int) pedstal;
+  const double pedestal = m_PedestalCentralADC + ((m_PedestalWidthADC > 0) ? gsl_ran_gaussian(m_RandomGenerator, m_PedestalWidthADC) : 0);
+  const int sum_ADC = signal_ADC + (int) pedestal;
 
   if (sum_ADC > m_ZeroSuppressionADC)
   {
@@ -311,8 +311,8 @@ RawTowerZDCDigitizer::sipm_photon_digitization(RawTowerZDC *sim_tower)
     signal_ADC = floor(active_pixel / m_PhotonElecADC);
   }
 
-  const double pedstal = m_PedstalCentralADC + ((m_PedstalWidthADC > 0) ? gsl_ran_gaussian(m_RandomGenerator, m_PedstalWidthADC) : 0);
-  const int sum_ADC = signal_ADC + (int) pedstal;
+  const double pedestal = m_PedestalCentralADC + ((m_PedestalWidthADC > 0) ? gsl_ran_gaussian(m_RandomGenerator, m_PedestalWidthADC) : 0);
+  const int sum_ADC = signal_ADC + (int) pedestal;
 
   if (sum_ADC > m_ZeroSuppressionADC)
   {

@@ -16,7 +16,7 @@ class RawTowerZDC;
 
 #include <gsl/gsl_rng.h>
 
-//! simple tower digitizer which sum all cell to produce photon yield and pedstal noises
+//! simple tower digitizer which sum all cell to produce photon yield and pedestal noises
 //! default input DST node is TOWER_SIM_DETECTOR
 //! default output DST node is TOWER_RAW_DETECTOR
 class RawTowerZDCDigitizer : public SubsysReco
@@ -60,27 +60,27 @@ class RawTowerZDCDigitizer : public SubsysReco
   }
 
   double
-  get_pedstal_central_ADC() const
+  get_pedestal_central_ADC() const
   {
-    return m_PedstalCentralADC;
+    return m_PedestalCentralADC;
   }
 
   void
-  set_pedstal_central_ADC(const double pedstalCentralAdc)
+  set_pedestal_central_ADC(const double pedestalCentralAdc)
   {
-    m_PedstalCentralADC = pedstalCentralAdc;
+    m_PedestalCentralADC = pedestalCentralAdc;
   }
 
   double
-  get_pedstal_width_ADC() const
+  get_pedestal_width_ADC() const
   {
-    return m_PedstalWidthADC;
+    return m_PedestalWidthADC;
   }
 
   void
-  set_pedstal_width_ADC(const double pedstalWidthAdc)
+  set_pedestal_width_ADC(const double pedestalWidthAdc)
   {
-    m_PedstalWidthADC = pedstalWidthAdc;
+    m_PedestalWidthADC = pedestalWidthAdc;
   }
 
   double
@@ -170,7 +170,7 @@ class RawTowerZDCDigitizer : public SubsysReco
  private:
   void CreateNodes(PHCompositeNode *topNode);
 
-  //! simple digitization with photon statistics, ADC conversion and pedstal
+  //! simple digitization with photon statistics, ADC conversion and pedestal
   //! \param  sim_tower simulation tower input
   //! \return a new RawTowerZDC object contain digitalized value of ADC output in RawTowerZDC::get_energy()
   RawTowerZDC *simple_photon_digitization(RawTowerZDC *sim_tower);
@@ -197,11 +197,11 @@ class RawTowerZDCDigitizer : public SubsysReco
   //! photon electron per ADC unit
   double m_PhotonElecADC;
 
-  //! pedstal central in unit of ADC
-  double m_PedstalCentralADC;
+  //! pedestal central in unit of ADC
+  double m_PedestalCentralADC;
 
-  //! pedstal width in unit of ADC
-  double m_PedstalWidthADC;
+  //! pedestal width in unit of ADC
+  double m_PedestalWidthADC;
 
   //! pedestal from file
   bool m_pedestalFile;
