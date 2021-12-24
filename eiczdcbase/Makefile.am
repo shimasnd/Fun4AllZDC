@@ -17,7 +17,8 @@ pkginclude_HEADERS = \
 	RawTowerZDCContainer.h \
 	RawTowerZDCGeom.h \
 	RawTowerZDCGeomv1.h \
-	RawTowerZDCGeomContainer.h
+	RawTowerZDCGeomContainer.h \
+	RawTowerZDCDeadMap.h
 
 lib_LTLIBRARIES = \
   libeiczdcbase.la
@@ -29,7 +30,8 @@ libeiczdcbase_la_SOURCES = \ \
 	RawTowerZDCContainer.cc \
 	RawTowerZDCGeom.cc \
 	RawTowerZDCGeomv1.cc \
-	RawTowerZDCGeomContainer.cc
+	RawTowerZDCGeomContainer.cc \
+	RawTowerZDCDeadMap.cc
 
 libeiczdcbase_la_LIBADD = \
   -lphool  
@@ -40,7 +42,8 @@ ROOTDICTS = \
 	RawTowerZDCContainer_Dict.cc \
 	RawTowerZDCGeom_Dict.cc \
 	RawTowerZDCGeomv1_Dict.cc \
-	RawTowerZDCGeomContainer_Dict.cc
+	RawTowerZDCGeomContainer_Dict.cc \
+	RawTowerZDCDeadMap_Dict.cc
 pcmdir = $(libdir)
 nobase_dist_pcm_DATA = \
 	RawTowerZDC_Dict_rdict.pcm \
@@ -48,7 +51,8 @@ nobase_dist_pcm_DATA = \
 	RawTowerZDCContainer_Dict_rdict.pcm \
 	RawTowerZDCGeom_Dict_rdict.pcm \
 	RawTowerZDCGeomv1_Dict_rdict.pcm \
-	RawTowerZDCGeomContainer_Dict_rdict.pcm 
+	RawTowerZDCGeomContainer_Dict_rdict.pcm  \
+	RawTowerZDCDeadMap_Dict_rdict.pcm
 
 # Rule for generating table CINT dictionaries.
 %_Dict.cc: %.h %LinkDef.h
