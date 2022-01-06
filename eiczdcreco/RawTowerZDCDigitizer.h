@@ -35,13 +35,9 @@ class RawTowerZDCDigitizer : public SubsysReco
   {
     //! directly pass the energy of sim tower to digitized tower
     kNo_digitization = 0,
-    //! wrong spelling, kept for macro compatibility
-    kNo_digitalization = 0,
 
     //! simple digitization with photon statistics, single amplitude ADC conversion and pedestal
     kSimple_photon_digitization = 1,
-    //! wrong spelling, kept for macro compatibility
-    kSimple_photon_digitalization = 1,
 
     //! digitization with photon statistics on SiPM with an effective pixel N, ADC conversion and pedestal
     kSiPM_photon_digitization = 2
