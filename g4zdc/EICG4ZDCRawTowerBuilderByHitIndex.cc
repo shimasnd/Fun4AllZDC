@@ -1,15 +1,12 @@
 #include "EICG4ZDCRawTowerBuilderByHitIndex.h"
 #include "EICG4ZDCdetid.h"
 
-#include <calobase/RawTowerContainer.h>
-#include <calobase/RawTowerv2.h>
+#include <eiczdcbase/RawTowerZDCContainer.h>
+#include <eiczdcbase/RawTowerZDCv1.h>
 
-#include <calobase/RawTower.h>                 // for RawTower
-#include <calobase/RawTowerDefs.h>             // for convert_name_to_caloid
-#include <calobase/RawTowerGeom.h>             // for RawTowerGeom
-#include <calobase/RawTowerGeomv3.h>
-#include <calobase/RawTowerGeomContainer.h>    // for RawTowerGeomContainer
-#include <calobase/RawTowerGeomContainerv1.h>
+#include <eiczdcbase/RawTowerZDCGeom.h>             // for RawTowerGeom
+#include <eiczdcbase/RawTowerZDCGeomv1.h>
+#include <eiczdcbase/RawTowerZDCGeomContainer.h>    // for RawTowerGeomContainer
 
 #include <g4main/PHG4Hit.h>
 #include <g4main/PHG4HitContainer.h>
@@ -47,7 +44,7 @@ EICG4ZDCRawTowerBuilderByHitIndex::EICG4ZDCRawTowerBuilderByHitIndex(const std::
   , m_Detector("NONE")
   , m_SubDetector("NONE")
   , m_MappingTowerFile("default.txt")
-  , m_CaloId(RawTowerDefs::NONE)
+  , m_CaloId(RawTowerZDCDefs::NONE)
   , m_Emin(1e-9)
   , m_TowerDepth(0)
   , m_ThicknessAbsorber(0)
@@ -129,7 +126,7 @@ int EICG4ZDCRawTowerBuilderByHitIndex::process_event(PHCompositeNode *topNode)
       }
     }
 
-    RawTowerDefs::keytype calotowerid = RawTowerDefs::encode_towerid_zdc(m_CaloId,
+    RawTowerZDCDefs::keytype calotowerid = RawTowerZDCDefs::encode_towerid_zdc(m_CaloId,
 								     g4hit_i->get_index_i(),
 								     g4hit_i->get_index_j(),
 								     towerid
@@ -137,23 +134,29 @@ int EICG4ZDCRawTowerBuilderByHitIndex::process_event(PHCompositeNode *topNode)
     
   
     /* add the energy to the corresponding tower */
-    RawTowerv2 *tower = dynamic_cast<RawTowerv2 *>(m_Towers->getTower(calotowerid));
+    RawTowerZDCv1 *tower = dynamic_cast<RawTowerZDCv1 *>(m_Towers->getTower(calotowerid));
     if (!tower)
     {
-      tower = new RawTowerv2(calotowerid);
+      tower = new RawTowerZDCv1(calotowerid);
       tower->set_energy(0);
       m_Towers->AddTower(tower->get_id(), tower);
       if (Verbosity() > 2) 
       {
 	cout<<m_SubDetector<<" : L = "<<layerid<<" , T = "<<towerid<<endl;
 	    
-        std::cout << "in:   " <<  g4hit_i->get_index_i() << "\t" << g4hit_i->get_index_j() << "\t" << layerid << std::endl;
+        std::cout << "in:   " <<  g4hit_i->get_index_i() << "\t" << g4hit_i->get_index_j() << "\t" << towerid << std::endl;
         std::cout << "decoded: " <<  tower->get_bineta() << "\t" << tower->get_binphi()  << "\t" << tower->get_binl()  << std::endl;
       }
     }
-    tower->add_ecell(layerid, g4hit_i->get_light_yield());
-    tower->set_energy(tower->get_energy() + g4hit_i->get_light_yield());
-    tower->add_eshower(g4hit_i->get_shower_id(), g4hit_i->get_edep());
+
+    double hit_energy = 0;
+    if(m_SubDetID==ZDCID::Crystal || m_SubDetID==ZDCID::Scintillator) hit_energy = g4hit_i->get_light_yield();
+    else hit_energy = g4hit_i->get_edep();
+
+    tower->add_ecell(layerid, hit_energy);
+    tower->set_energy(tower->get_energy() + hit_energy);
+    tower->add_eshower(g4hit_i->get_shower_id(), hit_energy);
+
   }
 
   float towerE = 0.;
@@ -171,8 +174,8 @@ int EICG4ZDCRawTowerBuilderByHitIndex::process_event(PHCompositeNode *topNode)
          << " energy, lost energy: " << towerE - m_Towers->getTotalEdep() << endl;
     m_Towers->identify();
     std::cout<<"Total energy: "<<m_Towers->getTotalEdep()<<std::endl;
-    RawTowerContainer::ConstRange begin_end = m_Towers->getTowers();
-    RawTowerContainer::ConstIterator iter;
+    RawTowerZDCContainer::ConstRange begin_end = m_Towers->getTowers();
+    RawTowerZDCContainer::ConstIterator iter;
     for (iter = begin_end.first; iter != begin_end.second; ++iter)
     {
       iter->second->identify();
@@ -213,7 +216,7 @@ void EICG4ZDCRawTowerBuilderByHitIndex::SubDetector(const std::string &d)
     exit(1);
   }
   
-  m_CaloId = RawTowerDefs::convert_name_to_caloid(d);
+  m_CaloId = RawTowerZDCDefs::convert_name_to_caloid(d);
   
 }
 
@@ -235,7 +238,7 @@ void EICG4ZDCRawTowerBuilderByHitIndex::CreateNodes(PHCompositeNode *topNode)
   }
 
   // Create the tower geometry node on the tree
-  m_Geoms = new RawTowerGeomContainerv1(m_CaloId);
+  m_Geoms = new RawTowerZDCGeomContainer(m_CaloId);
   string NodeNameTowerGeometries = "TOWERGEOM_" + m_SubDetector;
 
   PHIODataNode<PHObject> *geomNode = new PHIODataNode<PHObject>(m_Geoms, NodeNameTowerGeometries, "PHObject");
@@ -252,7 +255,7 @@ void EICG4ZDCRawTowerBuilderByHitIndex::CreateNodes(PHCompositeNode *topNode)
   }
 
   // Create the tower nodes on the tree
-  m_Towers = new RawTowerContainer(m_CaloId);
+  m_Towers = new RawTowerZDCContainer(m_CaloId);
   string NodeNameTowers;
   if (m_SimTowerNodePrefix.empty())
   {
@@ -276,7 +279,7 @@ bool EICG4ZDCRawTowerBuilderByHitIndex::ReadGeometryFromTable()
   ifstream istream_mapping;
 
   if(m_MappingTowerFile.find(m_SubDetector)==std::string::npos){
-    cerr<<"CaloTowerGeomManager::ReadGeometryFileFromTable - ERROR unmatched mapping file: SubDetector "<<m_SubDetector<<" : mapping file : "<<m_MappingTowerFile<<endl;
+    cerr<<"ZDCTowerGeomManager::ReadGeometryFileFromTable - ERROR unmatched mapping file: SubDetector "<<m_SubDetector<<" : mapping file : "<<m_MappingTowerFile<<endl;
   }
 
   /* Open the datafile, if it won't open return an error */
@@ -285,7 +288,7 @@ bool EICG4ZDCRawTowerBuilderByHitIndex::ReadGeometryFromTable()
     istream_mapping.open(m_MappingTowerFile);
     if (!istream_mapping)
     {
-      cerr << "CaloTowerGeomManager::ReadGeometryFromTable - ERROR Failed to open mapping file " << m_MappingTowerFile << endl;
+      cerr << "ZDCTowerGeomManager::ReadGeometryFromTable - ERROR Failed to open mapping file " << m_MappingTowerFile << endl;
       exit(1);
     }
   }
@@ -330,10 +333,10 @@ bool EICG4ZDCRawTowerBuilderByHitIndex::ReadGeometryFromTable()
       }
 
         /* Construct unique Tower ID */
-      unsigned int temp_id = RawTowerDefs::encode_towerid_zdc(m_CaloId, idx_x, idx_y, idx_T);
+      unsigned int temp_id = RawTowerZDCDefs::encode_towerid_zdc(m_CaloId, idx_x, idx_y, idx_T);
 
       /* Create tower geometry object */
-      RawTowerGeom *temp_geo = new RawTowerGeomv3(temp_id);
+      RawTowerZDCGeomv1 *temp_geo = new RawTowerZDCGeomv1(temp_id);
       temp_geo->set_center_x(pos_x);
       temp_geo->set_center_y(pos_y);
       temp_geo->set_center_z(pos_z);
@@ -405,9 +408,9 @@ bool EICG4ZDCRawTowerBuilderByHitIndex::ReadGeometryFromTable()
     
   /* Correct tower geometries for global calorimter translation / rotation 
    * after reading parameters from file */
-  RawTowerGeomContainer::ConstRange all_towers = m_Geoms->get_tower_geometries();
+  RawTowerZDCGeomContainer::ConstRange all_towers = m_Geoms->get_tower_geometries();
 
-  for (RawTowerGeomContainer::ConstIterator it = all_towers.first;
+  for (RawTowerZDCGeomContainer::ConstIterator it = all_towers.first;
        it != all_towers.second; ++it)
   {
     double x_temp = it->second->get_center_x();
